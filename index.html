@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Hopper | A Particle Adventure</title>
+    <link rel="icon" type="image/x-icon" href="https://quantum-hopper.onrender.com/favicon.ico">
+    <meta name="description"
+        content="Play Quantum Hopper - an exciting physics-based puzzle platformer with portals and quantum mechanics. Navigate through levels with gravity, teleportation, and strategic jumps.">
+    </meta>
+    <meta name="keywords" content="quantum game, platformer, physics game, puzzle game, portal game, html5 game, browser game, free online game, quantum hopper, particle adventure">
+    </meta>
+    <meta name="robots" content="index, follow">
+    </meta>
+    <link rel="canonical" href="https://quantum-hopper.onrender.com/">
+    </link>
+    <meta property="og:locale" content="en_IN">
+    </meta>
+    <meta property="og:type" content="website">
+    </meta>
+    <meta property="og:title" content="Quantum Hopper | A Particle Adventure">
+    </meta>
+    <meta property="og:description"
+        content="Play Quantum Hopper - an exciting physics-based puzzle platformer with portals and quantum mechanics. Navigate through levels with gravity, teleportation, and strategic jumps.">
+    </meta>
+    <meta property="og:url" content="https://quantum-hopper.onrender.com/">
+    </meta>
+    <meta property="og:site_name" content="Quantum Hopper">
+    </meta>
+    <meta property="og:image" content="https://quantum-hopper.onrender.com/image.png">
+    </meta>
+    <meta property="og:image:secure_url" content="https://quantum-hopper.onrender.com/image.png">
+    </meta>
+    <meta property="og:image:width" content="1058">
+    </meta>
+    <meta property="og:image:height" content="686">
+    </meta>
+    <meta property="og:image:alt" content="Quantum Hopper | A Particle Adventure">
+    </meta>
+    <meta property="og:image:type" content="image/png">
+    </meta>
+    <meta name="twitter:card" content="summary_large_image">
+    </meta>
+    <meta name="twitter:title" content="Quantum Hopper | A Particle Adventure">
+    </meta>
+    <meta name="twitter:description"
+        content="Play Quantum Hopper - an exciting physics-based puzzle platformer with portals and quantum mechanics. Navigate through levels with gravity, teleportation, and strategic jumps.">
+    </meta>
+    <meta name="twitter:image" content="https://quantum-hopper.onrender.com/image.png">
+    </meta>
+    <meta name="twitter:label1" content="Time to read">
+    </meta>
+    <meta name="twitter:data1" content="1 minute">
+    </meta>
+    <meta name="author" content="Himanshu Santani">
+    <meta name="developer" content="Himanshu Santani">
+    <meta name="copyright" content="© 2025 Himanshu Santani. All rights reserved.">
+    <style>
+        :root {
+            --primary: #5e35b1;
+            --secondary: #3949ab;
+            --accent: #ffab00;
+            --text: #f5f5f5;
+            --bg: #121212;
+            --particle: #00e5ff;
+            --obstacle: #f44336;
+            --portal-in: #00c853;
+            --portal-out: #aa00ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 500px;
+            max-width: 100%;
+            max-height: 90vh;
+            background-color: var(--bg);
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        #game-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #game-ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #level-info {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        #score-display {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+
+        #menu-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        #game-title {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--accent), var(--particle));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: var(--text);
+            border: none;
+            padding: 12px 30px;
+            margin: 10px;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        #controls-info {
+            margin-top: 30px;
+            text-align: center;
+            line-height: 1.6;
+            max-width: 80%;
+        }
+
+        #completed-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        #result-text {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .joystick-area {
+            position: absolute;
+            bottom: 20px;
+            width: 120px;
+            height: 120px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            pointer-events: auto;
+        }
+
+        #left-joystick {
+            left: 20px;
+        }
+
+        #right-joystick {
+            right: 20px;
+        }
+
+        .joystick-knob {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            cursor: move;
+        }
+
+        .copyright {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .joystick-area {
+                display: flex;
+            }
+
+            #controls-info {
+                font-size: 14px;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+
+        <div id="game-ui">
+            <div id="level-info">Level: <span id="level-display">1</span></div>
+            <div id="score-display">Score: <span id="score-value">0</span></div>
+        </div>
+
+        <div id="menu-screen">
+            <h1 id="game-title">QUANTUM HOPPER</h1>
+            <div class="copyright">Developed by - <a href="https://quantum-hopper.onrender.com/" target="_blank"
+                    style="color: #0011ff; text-decoration: none;">Himanshu Santani</a></div>
+
+            <button id="start-btn" class="btn pulse">START GAME</button>
+            <div id="controls-info">
+                <p><strong>Controls:</strong> Use WASD or Arrow Keys to move.</p>
+                <p>Press SPACE to activate quantum abilities.</p>
+                <p>Navigate through portals and avoid obstacles to reach the goal.</p>
+
+            </div>
+        </div>
+
+        <div id="completed-screen">
+            <h1 id="result-text">LEVEL COMPLETED!</h1>
+            <div id="stats-display"></div>
+            <button id="next-level-btn" class="btn">NEXT LEVEL</button>
+            <button id="menu-btn" class="btn">MAIN MENU</button>
+        </div>
+
+        <div id="left-joystick" class="joystick-area">
+            <div class="joystick-knob"></div>
+        </div>
+        <div id="right-joystick" class="joystick-area">
+            <div class="joystick-knob"></div>
+        </div>
+    </div>
+
+    <script>
+        // Game Constants
+        const GRAVITY = 0.5;
+        const FRICTION = 0.9;
+        const JUMP_FORCE = -12;
+        const HOP_FORCE = -6;
+        const PARTICLE_SIZE = 15;
+        const PORTAL_SIZE = 30;
+
+        // Game State
+        const gameState = {
+            currentLevel: 1,
+            score: 0,
+            isRunning: false,
+            isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+            levels: [
+                // Level 1
+                {
+                    player: { x: 50, y: 400 },
+                    portals: [
+                        { x: 400, y: 300, type: 'in' },
+                        { x: 700, y: 350, type: 'out' }
+                    ],
+                    obstacles: [
+                        { x: 200, y: 450, width: 300, height: 20 },
+                        { x: 550, y: 380, width: 100, height: 20 }
+                    ],
+                    goal: { x: 750, y: 350, width: 30, height: 30 }
+                },
+                // Level 2
+                {
+                    player: { x: 50, y: 400 },
+                    portals: [
+                        { x: 300, y: 300, type: 'in' },
+                        { x: 500, y: 200, type: 'out' }
+                    ],
+                    obstacles: [
+                        { x: 150, y: 450, width: 200, height: 20 },
+                        { x: 400, y: 450, width: 200, height: 20 },
+                        { x: 650, y: 300, width: 100, height: 20 }
+                    ],
+                    goal: { x: 700, y: 250, width: 30, height: 30 }
+                },
+                // Level 3
+                {
+                    player: { x: 50, y: 400 },
+                    portals: [
+                        { x: 200, y: 200, type: 'in' },
+                        { x: 400, y: 300, type: 'out' },
+                        { x: 600, y: 200, type: 'in' },
+                        { x: 300, y: 350, type: 'out' }
+                    ],
+                    obstacles: [
+                        { x: 0, y: 450, width: 150, height: 20 },
+                        { x: 250, y: 450, width: 150, height: 20 },
+                        { x: 500, y: 450, width: 150, height: 20 },
+                        { x: 650, y: 300, width: 20, height: 150 }
+                    ],
+                    goal: { x: 680, y: 250, width: 30, height: 30 }
+                }
+            ]
+        };
+
+        // Game Elements
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const menuScreen = document.getElementById('menu-screen');
+        const completedScreen = document.getElementById('completed-screen');
+        const startBtn = document.getElementById('start-btn');
+        const nextLevelBtn = document.getElementById('next-level-btn');
+        const menuBtn = document.getElementById('menu-btn');
+        const levelDisplay = document.getElementById('level-display');
+        const scoreDisplay = document.getElementById('score-value');
+        const resultText = document.getElementById('result-text');
+        const statsDisplay = document.getElementById('stats-display');
+
+        // Set canvas dimensions
+        function resizeCanvas() {
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+            // Adjust game elements for the new size
+            if (gameState.player) {
+                gameState.player.x = gameState.player.x / gameState.lastWidth * canvas.width;
+                gameState.player.y = gameState.player.y / gameState.lastHeight * canvas.height;
+
+                gameState.levelData.portals.forEach(portal => {
+                    portal.x = portal.x / gameState.lastWidth * canvas.width;
+                    portal.y = portal.y / gameState.lastHeight * canvas.height;
+                });
+
+                gameState.levelData.obstacles.forEach(obstacle => {
+                    obstacle.x = obstacle.x / gameState.lastWidth * canvas.width;
+                    obstacle.y = obstacle.y / gameState.lastHeight * canvas.height;
+                    obstacle.width = obstacle.width / gameState.lastWidth * canvas.width;
+                    obstacle.height = obstacle.height / gameState.lastHeight * canvas.height;
+                });
+
+                gameState.levelData.goal.x = gameState.levelData.goal.x / gameState.lastWidth * canvas.width;
+                gameState.levelData.goal.y = gameState.levelData.goal.y / gameState.lastHeight * canvas.height;
+                gameState.levelData.goal.width = gameState.levelData.goal.width / gameState.lastWidth * canvas.width;
+                gameState.levelData.goal.height = gameState.levelData.goal.height / gameState.lastHeight * canvas.height;
+            }
+            gameState.lastWidth = canvas.width;
+            gameState.lastHeight = canvas.height;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Player Physics
+        class Player {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = PARTICLE_SIZE;
+                this.velocityX = 0;
+                this.velocityY = 0;
+                this.isJumping = false;
+                this.isTeleporting = false;
+                this.color = 'var(--particle)';
+                this.glowRadius = 15;
+                this.glowColor = 'rgba(0, 229, 255, 0.3)';
+                this.speed = 5;
+            }
+
+            update(obstacles) {
+                // Apply gravity
+                this.velocityY += GRAVITY;
+
+                // Apply friction
+                this.velocityX *= FRICTION;
+
+                // Update position
+                this.x += this.velocityX;
+                this.y += this.velocityY;
+
+                // Boundary check
+                if (this.x < 0) this.x = 0;
+                if (this.x > canvas.width - this.size) this.x = canvas.width - this.size;
+                if (this.y > canvas.height - this.size) {
+                    this.y = canvas.height - this.size;
+                    this.velocityY = 0;
+                    this.isJumping = false;
+                }
+
+                // Collision with obstacles
+                obstacles.forEach(obstacle => {
+                    if (this.isCollidingWith(obstacle)) {
+                        // Collision from above
+                        if (this.y + this.size > obstacle.y &&
+                            this.y + this.size < obstacle.y + obstacle.height / 2 &&
+                            this.x + this.size > obstacle.x &&
+                            this.x < obstacle.x + obstacle.width) {
+                            this.y = obstacle.y - this.size;
+                            this.velocityY = 0;
+                            this.isJumping = false;
+                        }
+                        // Collision from left
+                        else if (this.x + this.size > obstacle.x &&
+                            this.x + this.size < obstacle.x + obstacle.width / 2 &&
+                            this.y + this.size > obstacle.y &&
+                            this.y < obstacle.y + obstacle.height) {
+                            this.x = obstacle.x - this.size;
+                            this.velocityX = 0;
+                        }
+                        // Collision from right
+                        else if (this.x < obstacle.x + obstacle.width &&
+                            this.x > obstacle.x + obstacle.width / 2 &&
+                            this.y + this.size > obstacle.y &&
+                            this.y < obstacle.y + obstacle.height) {
+                            this.x = obstacle.x + obstacle.width;
+                            this.velocityX = 0;
+                        }
+                        // Collision from below
+                        else if (this.y < obstacle.y + obstacle.height &&
+                            this.y > obstacle.y + obstacle.height / 2 &&
+                            this.x + this.size > obstacle.x &&
+                            this.x < obstacle.x + obstacle.width) {
+                            this.y = obstacle.y + obstacle.height;
+                            this.velocityY = 0;
+                        }
+                    }
+                });
+            }
+
+            isCollidingWith(object) {
+                return this.x < object.x + object.width &&
+                    this.x + this.size > object.x &&
+                    this.y < object.y + object.height &&
+                    this.y + this.size > object.y;
+            }
+
+            draw() {
+                // Draw glow effect
+                ctx.beginPath();
+                ctx.arc(this.x + this.size / 2, this.y + this.size / 2, this.glowRadius, 0, Math.PI * 2);
+                ctx.fillStyle = this.glowColor;
+                ctx.fill();
+
+                // Draw particle
+                ctx.beginPath();
+                ctx.arc(this.x + this.size / 2, this.y + this.size / 2, this.size / 2, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        // Initialize game
+        function initGame() {
+            gameState.levelData = gameState.levels[gameState.currentLevel - 1];
+            gameState.player = new Player(gameState.levelData.player.x, gameState.levelData.player.y);
+            gameState.keys = {};
+            gameState.gameOver = false;
+            gameState.levelComplete = false;
+            gameState.lastWidth = canvas.width;
+            gameState.lastHeight = canvas.height;
+            levelDisplay.textContent = gameState.currentLevel;
+            scoreDisplay.textContent = gameState.score;
+        }
+
+        // Input handling
+        function setupInput() {
+            // Keyboard controls
+            window.addEventListener('keydown', e => {
+                gameState.keys[e.key] = true;
+            });
+
+            window.addEventListener('keyup', e => {
+                gameState.keys[e.key] = false;
+
+                // Hop ability (short jump when pressing space)
+                if (e.key === ' ' && !gameState.player.isJumping && !gameState.player.isTeleporting) {
+                    gameState.player.velocityY = HOP_FORCE;
+                    gameState.player.isJumping = true;
+                    gameState.score += 5;
+                    updateScore();
+                }
+            });
+
+            // Mobile controls
+            if (gameState.isMobile) {
+                let leftJoystick = document.getElementById('left-joystick');
+                let rightJoystick = document.getElementById('right-joystick');
+                let leftKnob = leftJoystick.querySelector('.joystick-knob');
+                let rightKnob = rightJoystick.querySelector('.joystick-knob');
+                let activeJoystick = null;
+                let startX, startY, moveX, moveY;
+
+                // Touch events
+                leftJoystick.addEventListener('touchstart', handleTouchStart);
+                rightJoystick.addEventListener('touchstart', handleTouchStart);
+                document.addEventListener('touchmove', handleTouchMove);
+                document.addEventListener('touchend', handleTouchEnd);
+
+                function handleTouchStart(e) {
+                    e.preventDefault();
+                    let joystick = e.target.closest('.joystick-area');
+                    activeJoystick = joystick;
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+
+                    if (joystick.id === 'left-joystick') {
+                        gameState.keys['ArrowLeft'] = false;
+                        gameState.keys['ArrowRight'] = false;
+                    } else {
+                        gameState.keys[' '] = false;
+                    }
+                }
+
+                function handleTouchMove(e) {
+                    e.preventDefault();
+                    if (!activeJoystick) return;
+
+                    let touch = e.touches[0];
+                    moveX = touch.clientX - startX;
+                    moveY = touch.clientY - startY;
+
+                    let distance = Math.sqrt(moveX * moveX + moveY * moveY);
+                    let maxDistance = 40;
+
+                    if (distance > maxDistance) {
+                        moveX = moveX / distance * maxDistance;
+                        moveY = moveY / distance * maxDistance;
+                    }
+
+                    let knob = activeJoystick.querySelector('.joystick-knob');
+                    knob.style.transform = `translate(${moveX}px, ${moveY}px)`;
+
+                    if (activeJoystick.id === 'left-joystick') {
+                        // Left-right movement
+                        if (Math.abs(moveX) > 10) {
+                            gameState.keys['ArrowRight'] = moveX > 0;
+                            gameState.keys['ArrowLeft'] = moveX < 0;
+                        } else {
+                            gameState.keys['ArrowLeft'] = false;
+                            gameState.keys['ArrowRight'] = false;
+                        }
+
+                        // Up movement (jump)
+                        if (moveY < -20 && !gameState.player.isJumping && !gameState.player.isTeleporting) {
+                            gameState.player.velocityY = JUMP_FORCE;
+                            gameState.player.isJumping = true;
+                        }
+                    } else {
+                        // Space key (hop)
+                        if (moveY < -20 && !gameState.player.isJumping && !gameState.player.isTeleporting) {
+                            gameState.keys[' '] = true;
+                        }
+                    }
+                }
+
+                function handleTouchEnd(e) {
+                    e.preventDefault();
+                    if (!activeJoystick) return;
+
+                    let knob = activeJoystick.querySelector('.joystick-knob');
+                    knob.style.transform = 'translate(0, 0)';
+
+                    if (activeJoystick.id === 'left-joystick') {
+                        gameState.keys['ArrowLeft'] = false;
+                        gameState.keys['ArrowRight'] = false;
+                    } else {
+                        gameState.keys[' '] = false;
+                    }
+
+                    activeJoystick = null;
+                }
+            }
+        }
+
+        // Game loop
+        function gameLoop() {
+            if (!gameState.isRunning) return;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Handle player movement
+            if (gameState.keys['ArrowRight'] || gameState.keys['d']) {
+                gameState.player.velocityX = gameState.player.speed;
+            } else if (gameState.keys['ArrowLeft'] || gameState.keys['a']) {
+                gameState.player.velocityX = -gameState.player.speed;
+            } else {
+                gameState.player.velocityX = 0;
+            }
+
+            // Handle jumping
+            if ((gameState.keys['ArrowUp'] || gameState.keys['w']) && !gameState.player.isJumping && !gameState.player.isTeleporting) {
+                gameState.player.velocityY = JUMP_FORCE;
+                gameState.player.isJumping = true;
+            }
+
+            // Update and draw player
+            gameState.player.update(gameState.levelData.obstacles);
+            gameState.player.draw();
+
+            // Draw portals
+            gameState.levelData.portals.forEach(portal => {
+                ctx.beginPath();
+                ctx.arc(portal.x, portal.y, PORTAL_SIZE, 0, Math.PI * 2);
+                ctx.fillStyle = portal.type === 'in' ? 'var(--portal-in)' : 'var(--portal-out)';
+                ctx.fill();
+
+                // Portal inner circle
+                ctx.beginPath();
+                ctx.arc(portal.x, portal.y, PORTAL_SIZE / 2, 0, Math.PI * 2);
+                ctx.fillStyle = 'var(--bg)';
+                ctx.fill();
+
+                // Check portal collision
+                if (!gameState.player.isTeleporting &&
+                    Math.sqrt(Math.pow(gameState.player.x + gameState.player.size / 2 - portal.x, 2) +
+                        Math.pow(gameState.player.y + gameState.player.size / 2 - portal.y, 2)) < PORTAL_SIZE + gameState.player.size / 2) {
+                    handlePortalCollision(portal);
+                }
+            });
+
+            // Draw obstacles
+            gameState.levelData.obstacles.forEach(obstacle => {
+                ctx.fillStyle = 'var(--obstacle)';
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            });
+
+            // Draw goal
+            ctx.fillStyle = 'var(--accent)';
+            ctx.fillRect(gameState.levelData.goal.x, gameState.levelData.goal.y,
+                gameState.levelData.goal.width, gameState.levelData.goal.height);
+
+            // Add glow effect to goal
+            ctx.beginPath();
+            ctx.arc(gameState.levelData.goal.x + gameState.levelData.goal.width / 2,
+                gameState.levelData.goal.y + gameState.levelData.goal.height / 2,
+                gameState.levelData.goal.width * 1.5, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 171, 0, 0.2)';
+            ctx.fill();
+
+            // Check goal collision
+            if (gameState.player.isCollidingWith(gameState.levelData.goal)) {
+                completeLevel();
+            }
+
+            // Game over check (falling off screen)
+            if (gameState.player.y > canvas.height + 50) {
+                gameOver();
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function handlePortalCollision(portal) {
+            if (portal.type === 'out') return;
+
+            let targetPortal = gameState.levelData.portals.find(p => p.type === 'out' && p !== portal);
+            if (!targetPortal) return;
+
+            gameState.player.isTeleporting = true;
+            gameState.score += 20;
+            updateScore();
+
+            // Create teleport effect
+            let radius = 1;
+            let maxRadius = 30;
+            let teleportEffect = setInterval(() => {
+                radius += 2;
+
+                ctx.beginPath();
+                ctx.arc(portal.x, portal.y, radius, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                if (radius >= maxRadius) {
+                    clearInterval(teleportEffect);
+                    // Teleport player
+                    gameState.player.x = targetPortal.x - gameState.player.size / 2;
+                    gameState.player.y = targetPortal.y - gameState.player.size / 2;
+
+                    // Create arrival effect
+                    radius = maxRadius;
+                    let arrivalEffect = setInterval(() => {
+                        radius -= 2;
+
+                        ctx.beginPath();
+                        ctx.arc(targetPortal.x, targetPortal.y, radius, 0, Math.PI * 2);
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+
+                        if (radius <= 1) {
+                            clearInterval(arrivalEffect);
+                            gameState.player.isTeleporting = false;
+                        }
+                    }, 20);
+                }
+            }, 20);
+        }
+
+        function updateScore() {
+            scoreDisplay.textContent = gameState.score;
+        }
+
+        function completeLevel() {
+            gameState.isRunning = false;
+            gameState.levelComplete = true;
+
+            // Update stats display
+            statsDisplay.innerHTML = `Score: ${gameState.score}<br>Level: ${gameState.currentLevel}`;
+            resultText.textContent = 'LEVEL COMPLETED!';
+            nextLevelBtn.style.display = 'block';
+
+            completedScreen.style.display = 'flex';
+        }
+
+        function gameOver() {
+            gameState.isRunning = false;
+
+            // Update stats display
+            statsDisplay.innerHTML = `Score: ${gameState.score}<br>Level: ${gameState.currentLevel}`;
+            resultText.textContent = 'GAME OVER';
+            nextLevelBtn.style.display = 'none';
+
+            completedScreen.style.display = 'flex';
+        }
+
+        function startGame() {
+            menuScreen.style.display = 'none';
+            completedScreen.style.display = 'none';
+
+            initGame();
+            gameState.isRunning = true;
+            requestAnimationFrame(gameLoop);
+        }
+
+        function nextLevel() {
+            if (gameState.currentLevel < gameState.levels.length) {
+                gameState.currentLevel++;
+                startGame();
+            } else {
+                // Game completed
+                statsDisplay.innerHTML = `Final Score: ${gameState.score}<br>All levels completed!`;
+                resultText.textContent = 'GAME COMPLETED!';
+                nextLevelBtn.style.display = 'none';
+                completedScreen.style.display = 'flex';
+            }
+        }
+
+        function returnToMenu() {
+            menuScreen.style.display = 'flex';
+            completedScreen.style.display = 'none';
+            gameState.currentLevel = 1;
+            gameState.score = 0;
+        }
+
+        // Event listeners
+        startBtn.addEventListener('click', startGame);
+        nextLevelBtn.addEventListener('click', nextLevel);
+        menuBtn.addEventListener('click', returnToMenu);
+
+        // Initialize controls
+        setupInput();
+    </script>
+</body>
+
+</html>
